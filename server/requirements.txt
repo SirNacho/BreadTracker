@@ -1,0 +1,8 @@
+google-search-results
+fastapi
+fastapi[standard]
+typing
+requests
+python-dotenv
+uvicorn
+pydantic
