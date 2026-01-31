@@ -6,6 +6,7 @@ from services.serp_helpers import search_serp
 from services.chat import categorize_groceries
 from schemas import SearchGroceryListRequest
 from db import create_db_and_tables
+from routes import grocery_list
 import models
 
 load_dotenv()
@@ -17,6 +18,12 @@ async def lifespan(app: FastAPI):
     pass    
 
 app = FastAPI(lifespan=lifespan)
+
+app.include_router(
+    grocery_list.router,
+    prefix='/grocery-list',
+    tags=['grocery-list']
+)
 
 @app.get('/ping')
 def ping():
