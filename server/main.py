@@ -1,24 +1,34 @@
-from typing import List
-from dotenv import load_dotenv
 from fastapi import FastAPI
+from dotenv import load_dotenv
+from contextlib import asynccontextmanager
 
-from serp_helpers import search_serp
-from models.requests import SerpSearchRequest
-from models.responses import GroceryListItem
+from services.serp_helpers import search_serp
+from services.chat import categorize_groceries
+from schemas import SearchGroceryListRequest
+from db import create_db_and_tables
+import models
 
 load_dotenv()
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    create_db_and_tables()
+    yield
+    pass    
 
-@app.get('/')
-def root():
-    return { 'message': 'Hello World!' }
+app = FastAPI(lifespan=lifespan)
+
+@app.get('/ping')
+def ping():
+    return { 'message': 'pong' }
 
 @app.post('/search')
-def search_grocery_list(request: SerpSearchRequest):
-    groceries = {}
-    for grocery_item in request.grocery_list.splitlines():
-        groceries[grocery_item] = search_serp(grocery_item)
-    return groceries
+async def search_grocery_list(request: SearchGroceryListRequest):
+    groceries = { item: search_serp(item) for item in request.grocery_list.splitlines() }
+
+    grocery_names = { key: [item.title for item in val] for key, val in groceries.items() }
+    
+    categorized_groceries = await categorize_groceries(grocery_names)
+    return categorized_groceries
         
                 

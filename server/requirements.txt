@@ -6,3 +6,6 @@ requests
 python-dotenv
 uvicorn
 pydantic
+google-genai
+sqlmodel
+sqlalchemy
