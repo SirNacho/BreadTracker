@@ -1,41 +1,37 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from contextlib import asynccontextmanager
 
-from services.serp_helpers import search_serp
-from services.chat import categorize_groceries
-from schemas import SearchGroceryListRequest
 from db import create_db_and_tables
 from routes import grocery_list
 import models
 
 load_dotenv()
 
+origins = [
+    'http://localhost:3000',
+    'http://192.168.1.144:3000'
+]
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    create_db_and_tables()
+    await create_db_and_tables()
     yield
     pass    
 
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(
-    grocery_list.router,
-    prefix='/grocery-list',
-    tags=['grocery-list']
+app.include_router(grocery_list.router, prefix='/grocery-list', tags=['grocery-list'])
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*']
 )
 
 @app.get('/ping')
 def ping():
     return { 'message': 'pong' }
-
-@app.post('/search')
-async def search_grocery_list(request: SearchGroceryListRequest):
-    groceries = { item: search_serp(item) for item in request.grocery_list.splitlines() }
-
-    grocery_names = { key: [item.title for item in val] for key, val in groceries.items() }
-    
-    categorized_groceries = await categorize_groceries(grocery_names)
-    return categorized_groceries
-        
-                

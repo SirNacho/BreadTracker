@@ -1,4 +1,4 @@
-from schemas.camel_model import CamelModel
+from schemas import CamelModel
 from typing import Optional, List            
 
 class GroceryOption(CamelModel):

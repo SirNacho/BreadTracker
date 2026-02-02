@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 from typing import Dict, List
 from google.genai import types
 
+from schemas.responses import GroceryOption
+
 load_dotenv()
 
 SYSTEM_PROMPT = """
@@ -65,7 +67,7 @@ async def categorize_groceries(grocery_names: Dict[str, List[str]]):
     
     return dict(results)
 
-async def categorize_groceries(grocery_names: Dict[str, List[str]]):
+async def categorize_groceries(grocery_names: Dict[str, List[str]]) -> Dict[str, Dict[str, List[str]]]:
     client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
     config = types.GenerateContentConfig(
         system_instruction=SYSTEM_PROMPT, 
@@ -87,6 +89,8 @@ async def categorize_groceries(grocery_names: Dict[str, List[str]]):
     
     tasks = [categorize_single_grocery(g, s) for g, s in grocery_names.items()]
     
+    print('Staring LLM', '-'*25)
     results = await asyncio.gather(*tasks)
+    print('LLM Finished', '-'*25)
     
     return dict(results)

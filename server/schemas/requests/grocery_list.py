@@ -5,6 +5,3 @@ class SaveGroceryListRequest(CamelModel):
     
 class CreateGroceryListRequest(CamelModel):
     contents: str
-
-class SearchGroceryListRequest(CamelModel):
-    grocery_list: str

@@ -2,7 +2,7 @@ import os
 from serpapi import GoogleSearch
 from typing import List  
 
-from schemas import GroceryOption
+from schemas.responses import GroceryOption
 
 def search_serp(grocery_item: str) -> List[GroceryOption]:
     params = {
