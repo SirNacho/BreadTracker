@@ -1,12 +1,11 @@
 import os
 import json
 import asyncio
-from google import genai
-from dotenv import load_dotenv
 from typing import Dict, List
+from dotenv import load_dotenv
+from openai import AsyncOpenAI
+from google import genai
 from google.genai import types
-
-from schemas.responses import GroceryOption
 
 load_dotenv()
 
@@ -39,57 +38,30 @@ Example:
 }
 """
 
-
-
-async def categorize_groceries(grocery_names: Dict[str, List[str]]):
-    client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
-    config = types.GenerateContentConfig(
-        system_instruction=SYSTEM_PROMPT, 
-        response_mime_type='application/json',
-        temperature=0.1
-    )
-    
-    async def categorize_single_grocery(grocery: str, skus: List[str]):
-        try:
-            response = client.models.generate_content(
-                model='gemini-3-flash-preview',
-                contents=f"Search Term: \"{grocery}\"\nSKUs: {json.dumps(skus)}",
-                config=config
-            )
-            return json.loads(response.text)
-        except Exception as e:
-            print(f"Error processing {grocery}: {e}")
-            return grocery, {"Error": ["Could not categorize"]}
-    
-    tasks = [categorize_single_grocery(g, s) for g, s in grocery_names.items()]
-    
-    results = await asyncio.gather(*tasks)
-    
-    return dict(results)
-
 async def categorize_groceries(grocery_names: Dict[str, List[str]]) -> Dict[str, Dict[str, List[str]]]:
-    client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
-    config = types.GenerateContentConfig(
-        system_instruction=SYSTEM_PROMPT, 
-        response_mime_type='application/json',
-        temperature=0.1
-    )
+    client = AsyncOpenAI(api_key=os.getenv('OPENAI_API_KEY'))
     
     async def categorize_single_grocery(grocery: str, skus: List[str]):
         try:
-            response = await client.aio.models.generate_content(
-                model='gemini-3-flash-preview',
-                contents=f"Search Term: \"{grocery}\"\nSKUs: {json.dumps(skus)}",
-                config=config
+            response = await client.chat.completions.create(
+                model="gpt-5-nano",
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": f"Search Term: \"{grocery}\"\nSKUs: {json.dumps(skus)}"}
+                ],
+                response_format={"type": "json_object"}
             )
-            return grocery, json.loads(response.text)
+            
+            content = response.choices[0].message.content
+            return grocery, json.loads(content)
+            
         except Exception as e:
             print(f"Error processing {grocery}: {e}")
             return grocery, {"Error": ["Could not categorize"]}
     
     tasks = [categorize_single_grocery(g, s) for g, s in grocery_names.items()]
     
-    print('Staring LLM', '-'*25)
+    print('Starting LLM', '-'*25)
     results = await asyncio.gather(*tasks)
     print('LLM Finished', '-'*25)
     
