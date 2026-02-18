@@ -1,0 +1,91 @@
+# BreadTracker
+
+Full-stack grocery optimization application built with:
+
+- FastAPI (Python backend)
+- PostgreSQL + SQLAlchemy Async
+- Google GenAI (Gemini integration)
+- Next.js 16 (Frontend)
+- Node.js 20 LTS
+
+---
+
+# 📦 System Requirements
+
+## Backend
+- Python 3.10+
+- pip
+- Virtual environment (venv)
+
+## Frontend
+- **Node.js 20 LTS (x64)**
+- npm (bundled with Node)
+
+> ⚠️ Important: Node 24 causes SWC/Turbopack errors on Windows. Use Node 20.x.
+
+---
+
+# 🚀 Quick Start (Run Entire App)
+
+You will use **two terminals**.
+
+---
+
+# 🔹 Terminal 1 — Start Backend
+
+```powershell
+cd server
+python -m venv venv
+.\venv\Scripts\activate
+pip install -r requirements.txt
+pip install asyncpg google-genai
+python -m uvicorn main:app --reload --port 8000
+
+#Terminal 2
+
+cd next-client
+npm install
+$env:NEXT_DISABLE_TURBOPACK="1"
+npm run dev
+
+http://localhost:3000
+
+
+#Create and Activate Virtual Environment
+cd server
+python -m venv venv
+.\venv\Scripts\activate
+
+
+You should see:(venv) PS C:\...
+
+#Install dependencies
+
+pip install -r requirements.txt
+
+pip install "fastapi[standard]" uvicorn python-dotenv pydantic sqlmodel sqlalchemy requests asyncpg google-genai
+
+pip install asyncpg
+
+pip install google-genai If that fails: pip install google-generativeai
+
+Frontend installations 
+node -v to check for node version 20 v20.x.x
+
+cd next-client
+npm install
+
+next-swc... is not a valid Win32 application
+turbo.createProject is not supported by the wasm bindings
+
+Remove-Item -Recurse -Force node_modules -ErrorAction SilentlyContinue
+Remove-Item -Recurse -Force .next -ErrorAction SilentlyContinue
+Remove-Item -Force package-lock.json -ErrorAction SilentlyContinue
+Remove-Item -Force pnpm-lock.yaml -ErrorAction SilentlyContinue
+npm cache clean --force
+npm install
+
+$env:NEXT_DISABLE_TURBOPACK="1"
+npm run dev
+
+
