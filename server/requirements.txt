@@ -9,3 +9,4 @@ pydantic
 openai
 sqlmodel
 sqlalchemy
+asyncpg
