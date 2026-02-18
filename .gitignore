@@ -46,3 +46,5 @@ htmlcov/
 
 .env
 .http
+
+#This is a testing comment for a pull request to test the branch ruleset. -SF
