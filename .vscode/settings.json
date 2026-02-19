@@ -1,0 +1,6 @@
+{
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "python-envs.pythonProjects": []
+}
+
+// Aadit: I changed the default environment manager to system, since I want to use the same Python environment for both the server and client. Push?
