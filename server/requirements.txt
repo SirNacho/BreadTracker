@@ -2,3 +2,6 @@ python-dotenv
 fastapi
 fastapi[standard]
 uvicorn
+sqlmodel
+alembic
+psycopg2-binary
