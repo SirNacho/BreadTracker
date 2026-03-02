@@ -2,6 +2,9 @@ python-dotenv
 fastapi
 fastapi[standard]
 uvicorn
+supabase
+python-dotenv
+flask
 sqlmodel
 alembic
 psycopg2-binary
