@@ -1,7 +1,7 @@
 # Notes:
 - If you want to test the database connection run this command:
 ```
-testdb.py
+python testdb.py
 ```
 - The .env file should also be in github but a copy would be found in the shared google drive folder. 
 
