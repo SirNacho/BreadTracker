@@ -5,3 +5,6 @@ uvicorn
 supabase
 python-dotenv
 flask
+sqlmodel
+alembic
+psycopg2-binary
