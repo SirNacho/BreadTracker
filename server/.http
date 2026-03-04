@@ -1,0 +1,40 @@
+GET http://localhost:9001
+
+###
+
+POST http://localhost:9001/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "test@abc.com",
+    "password": "test123"
+
+}
+
+###
+
+GET http://localhost:9001/api/subscription
+
+###
+
+GET http://localhost:9001/api/subscription/1
+
+###
+
+POST http://localhost:9001/api/subscription/create
+Content-Type: application/json
+
+{
+    "serviceName": "Amazone Prime",
+    "cost": 12.99
+}
+
+###
+
+POST http://localhost:9001/api/subscription/update/1
+Content-Type: application/json
+
+{
+    "serviceName": "Netflix with Ads",
+    "cost": 8.99
+}
