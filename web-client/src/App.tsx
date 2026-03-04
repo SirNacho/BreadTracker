@@ -26,7 +26,12 @@ import {
   calculateUpcomingChargesTotal,
 } from "./types/utils/financialUtils"
 
-
+function sendEmail() {
+    fetch("http://127.0.0.1:8000/send-test-email")
+        .then(res => res.json())
+        .then(data => console.log(data))
+        .catch(err => console.error(err))
+}
 export default function App() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([])
 
@@ -37,6 +42,7 @@ export default function App() {
   const handleAdd = (newSubscription: Subscription) => {
   setSubscriptions((prev) => [...prev, newSubscription])
 }
+
 
   
 const [hasLoaded, setHasLoaded] = useState(false)
@@ -77,7 +83,11 @@ useEffect(() => {
       <Layout>
         {activeTab === "dashboard" && (
           <>
+
             <div className="mb-8">
+                          <button onClick={sendEmail}>
+                              Send Test Email
+                          </button>
               <h2 className="text-2xl font-semibold text-gray-900">
                 Dashboard Overview
               </h2>
