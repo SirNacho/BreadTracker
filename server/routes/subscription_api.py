@@ -16,7 +16,7 @@ def get_subscriptions(session: Session = Depends(get_session), user = Depends(ge
 def get_subscription(id: int, session: Session = Depends(get_session), user = Depends(get_user)):
     subscription = session.get(Subscription, id)
     
-    if not subscription or subscription.user_id != user.id:
+    if not subscription or str(subscription.user_id) != user.id:
         raise HTTPException(status_code=404, detail="Subscription not found or unauthorized")
         
     return subscription
@@ -39,7 +39,7 @@ def create_subscription(request: CreateSubscriptionRequest, session: Session = D
 def update_subscription(id: int, request: UpdateSubscriptionRequest, session: Session = Depends(get_session), user = Depends(get_user)):
     subscription = session.get(Subscription, id)
     
-    if not subscription or subscription.user_id != user.id:
+    if not subscription or str(subscription.user_id) != user.id:
         raise HTTPException(status_code=404, detail="Subscription not found or unauthorized")
     
     update_data = request.model_dump(exclude_unset=True)
@@ -54,3 +54,19 @@ def update_subscription(id: int, request: UpdateSubscriptionRequest, session: Se
         raise HTTPException(status_code=400, detail=f"Update failed: {str(e)}")
     
     return subscription
+
+@router.delete('/delete/{id}')
+def delete_subscription(id: int, session: Session = Depends(get_session), user = Depends(get_user)):
+    subscription = session.get(Subscription, id)
+    
+    if not subscription or str(subscription.user_id) != user.id:
+        raise HTTPException(status_code=404, detail="Subscription not found or unauthorized")
+    
+    try:
+        session.delete(subscription)
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        raise HTTPException(status_code=400, detail=f"Delete failed: {str(e)}")
+        
+    return {"message": "Subscription deleted successfully"}
