@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from models import Subscription
 from sqlmodel import Session, select
 from schemas import CreateSubscriptionRequest, UpdateSubscriptionRequest
-from services import get_user 
+from services.get_user import get_user
 
 router = APIRouter(prefix='/subscription', tags=['Subscriptions'])
 

@@ -1,7 +1,8 @@
-from cProfile import Profile
+import uuid
 from datetime import datetime
 from typing import Optional
-from sqlmodel import UUID, Field, Relationship, SQLModel, Column, DateTime, func
+from sqlmodel import Field, SQLModel, Column, DateTime, func, Relationship
+
 
 class Subscription(SQLModel, table=True):
     __tablename__ = "subscriptions"
@@ -10,7 +11,9 @@ class Subscription(SQLModel, table=True):
     service_name: str = Field(nullable=False)
     cost: float = Field(nullable=False)
     is_active: bool = Field(default=True, nullable=False)
-    user_id: UUID = Field(foreign_key='profiles.id')
+    user_id: uuid.UUID = Field(foreign_key='profiles.user_id')
+    user: Optional["Profile"] = Relationship(back_populates="subscriptions")
+    
     created_at: Optional[datetime] = Field(
         default=None,
         sa_column=Column(
@@ -27,6 +30,4 @@ class Subscription(SQLModel, table=True):
             nullable=False
         )
     )
-    
-    user: Profile = Relationship(back_populates='subscriptions')
     

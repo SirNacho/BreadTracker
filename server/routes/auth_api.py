@@ -1,4 +1,4 @@
-from cProfile import Profile
+from models import Profile
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
@@ -10,7 +10,7 @@ from services.auth_service import signup, login, reset_password, logout
 router = APIRouter(prefix='/auth', tags=['Auth'])
 
 @router.post("/signup")
-async def auth_signup(user: UserSignup, db: Session = Depends(get_session)):
+def auth_signup(user: UserSignup, db: Session = Depends(get_session)):
     response = signup(
         email=user.email, 
         password=user.password, 
@@ -23,7 +23,7 @@ async def auth_signup(user: UserSignup, db: Session = Depends(get_session)):
 
     try:
         new_profile = Profile(
-            id=response.user.id,
+            user_id=response.user.id,
             email=user.email,
             first_name=user.first_name,
             last_name=user.last_name
@@ -33,7 +33,7 @@ async def auth_signup(user: UserSignup, db: Session = Depends(get_session)):
         db.commit()
         db.refresh(new_profile)
         
-        return {"message": "User and Profile created successfully", "profile": new_profile}
+        return new_profile
 
     except Exception as e:
         db.rollback()
@@ -44,7 +44,7 @@ async def auth_login(user: UserLogin):
     result = login(user.email, user.password)
     if isinstance(result, str):
         raise HTTPException(status_code=401, detail=result)
-    return {"message": "Login successful", "session": result.session}
+    return result.session
 
 
 # TODO: Finish when working on reset password screen

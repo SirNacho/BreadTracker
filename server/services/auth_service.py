@@ -6,13 +6,19 @@ load_dotenv()
 supabase = create_client(os.getenv("SUPABASE_PROJECT_URL"), os.getenv("SUPABASE_API_KEY"))
 
 def signup(email, password, first_name, last_name):
-    try:
-        return supabase.auth.sign_up({
-            "email": email, "password": password,
-            "options": {"data": {"first_name": first_name, "last_name": last_name}}
-        })
-    except AuthApiError as e:
-        return f"Signup failed: {e.message}"
+    # sign_up usually returns an AuthResponse object
+    res = supabase.auth.sign_up({
+        "email": email, 
+        "password": password,
+        "options": {"data": {"first_name": first_name, "last_name": last_name}}
+    })
+    
+    # Check if the user was actually created
+    if res.user is None:
+        # If there's an error, it's usually in a specific field depending on the version
+        return "Signup failed: Check if user already exists or password is too short"
+    
+    return res
 
 def login(email, password):
     try:
