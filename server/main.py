@@ -1,16 +1,16 @@
-from fastapi import APIRouter, FastAPI
-from routes.subscription_api import router as subs_router
-from routes.auth_api import router as auth_router
+from fastapi import FastAPI
 
 app = FastAPI()
 
 @app.get('/')
 async def root():
-    return { 'message': 'BreadTracker API is Online' }
+    return { 'message': 'Hello World' }
 
-api_router = APIRouter(prefix='/api')
-
-api_router.include_router(subs_router)
-api_router.include_router(auth_router)
-
-app.include_router(api_router)
+@app.get('/send-test-email')
+async def send_test_email():
+    send_email(
+        "stevengia@outlook.com",  # change this
+        "Test Email",
+        "If you see this, it works."
+    )
+    return {"status": "Email sent"}
